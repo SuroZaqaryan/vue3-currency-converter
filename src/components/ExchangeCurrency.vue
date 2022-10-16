@@ -15,7 +15,8 @@
 
         <div class="currency__rate">
           <p>RUB</p>
-          <input type="number" v-model="exchangeable"
+          <input type="number"
+          v-model="exchangeable"
                  placeholder="Amount">
         </div>
       </div>
@@ -42,13 +43,11 @@
           </option>
         </select>
 
-        <h3 style="background: yellow">
-          {{ store.exchangeableResult }}
-        </h3>
-
-        <div style="background: red" class="currency__rate">
+        <div class="currency__rate">
           <p>{{chardCode}}</p>
-          <input type="number" disabled v-model="exchangeableResult">
+
+          <input type="number" 
+           v-model="exchangeableResult">
         </div>
       </div>
     </div>

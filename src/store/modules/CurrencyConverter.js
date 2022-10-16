@@ -4,7 +4,8 @@ export default {
         timeStamp: "", // get and show timestamp
         exchangeable: "",  // currency value
         calculateCountryCurrency: "Select Currency", // country selection
-        exchangeableResult: "333", // end result display
+        exchangeableResult: "", // end result display
+        errorMessage: false,
     },
 
     getters: {
@@ -16,13 +17,17 @@ export default {
             return state.timeStamp
         },
 
-        // exchangeableResult(state) {
-        //     return state.exchangeableResult
-        // },
+        exchangeableResult(state) {
+            return state.exchangeableResult
+        },
+
+        errorMessage(state) {
+            return state.errorMessage
+        }
     },
 
     actions: {
-        async fetchCurrencies({commit}) {
+        fetchCurrencies({commit}) {
             fetch('https://www.cbr-xml-daily.ru/daily_json.js').then(res => {
                 return res.json()
             }).then(data => {
@@ -45,7 +50,6 @@ export default {
 
         // Currency input fields
         UPDATE_EXCHANGEABLE(state, value) {
-            // this.commit("CALCULATE", value, state.calculateCountryCurrency)
             this.commit("CALCULATE", value)
         },
 
@@ -54,14 +58,13 @@ export default {
             state.calculateCountryCurrency = value;
         },
 
+        // Currency conversion
         CALCULATE(state, exchangeable) {
-
-            console.log('exchangeable', exchangeable);
-            console.log('calculateCountryCurrency', state.calculateCountryCurrency);
-
             state.exchangeableResult = (exchangeable / state.calculateCountryCurrency).toFixed(2);
+        },
 
-            console.log('4444', state.exchangeableResult)
+        VALIDATE_CURRENCY(state) {
+            state.errorMessage = state.calculateCountryCurrency === "Select Currency";
         }
     }
 }
