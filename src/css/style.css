@@ -86,7 +86,8 @@ input[type=number]::placeholder {
     color: #1a1e23;
 }
 
-.currency .currency__rate input, p {
+.currency .currency__rate input,
+p {
     font-size: 55px;
     color: #717171;
     font-weight: 300;
@@ -98,6 +99,10 @@ input[type=number]::placeholder {
     border: none;
     background: transparent;
     outline: none;
+}
+
+.currency .exchangeable {
+    border-bottom: 1px solid #c3c3c3;
 }
 
 .error select {
@@ -150,8 +155,10 @@ input[type=number]::placeholder {
 }
 
 @media only screen and (max-width: 768px) {
+
     .title h2,
-    .currency .currency__rate input, p {
+    .currency .currency__rate input,
+    p {
         font-size: 25px;
     }
 }

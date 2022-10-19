@@ -2,7 +2,7 @@
   <div class="wrapper">
     <div class="title">
       <h2>Currency Converter</h2>
-      <small>{{ getTimestamp }}</small>
+      <small>{{ timeStamp }}</small>
     </div>
     <div class="currency">
       <div class="currency__select">
@@ -13,11 +13,9 @@
           </option>
         </select>
 
-        <div class="currency__rate">
+        <div class="currency__rate exchangeable">
           <p>RUB</p>
-          <input type="number"
-          v-model="exchangeable"
-                 placeholder="Amount">
+          <input type="number" v-model="exchangeable" placeholder="Amount">
         </div>
       </div>
 
@@ -34,11 +32,10 @@
           <span v-if="errorMessage" class="error-message">Select Country</span>
         </div>
 
-        <select v-model="calculateCountryCurrency"
-                @change="changeCalculationCurrency($event)">
+        <select v-model="calculateCountryCurrency" @change="changeCalculationCurrency($event)">
           <option selected disabled hidden>Select Currency</option>
-          <option v-for="currency in getCurrencies" :key="currency.ID"
-                  :value="currency.Value" :data-country="currency.Name" :data-charcode="currency.CharCode">
+          <option v-for="currency in currencies" :key="currency.ID" :value="currency.Value"
+            :data-country="currency.Name" :data-charcode="currency.CharCode">
             {{ currency.Name }}
           </option>
         </select>
@@ -46,8 +43,7 @@
         <div class="currency__rate">
           <p>{{chardCode}}</p>
 
-          <input type="number" 
-           v-model="exchangeableResult">
+          <input type="number" v-model="exchangeableResult">
         </div>
       </div>
     </div>
@@ -55,5 +51,7 @@
 </template>
 
 <script src="../script/ExchangeCurrency.js"></script>
-<style src="../css/style.css"></style>
+<style src="../css/style.css">
+
+</style>
 

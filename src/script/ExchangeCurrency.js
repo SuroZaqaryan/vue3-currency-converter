@@ -1,87 +1,71 @@
-import {useStore} from "vuex";
-import {ref, onMounted,  computed} from "vue";
+import { ref, onMounted, watch } from 'vue'
 
 export default {
     setup() {
-        const store = useStore();
-
-        let baseCountryCurrency = ref("RUB");
-        let chardCode = ref("");
-        let calculateCountryCurrencyValue = ref("");
-
-        // ------Store-------
-
-        const getCurrencies = computed(() => {
-            return store.getters.getCurrencies
-        })
-
-        const getTimestamp = computed(() => {
-            return store.getters.getTimestamp
-        })
-
-        const errorMessage = computed(() => {
-            return store.getters.errorMessage
-        })
-
-        const exchangeableResult = computed(() => {
-            return store.getters.exchangeableResult
-        })
-
-        const exchangeable = computed({
-            get() {
-                return store.state.exchangeable
-            },
-            set(value) {
-                store.commit('UPDATE_EXCHANGEABLE', value)
-                store.commit("VALIDATE_CURRENCY")
-            },
-        });
-
-        const calculateCountryCurrency = computed({
-            get() {
-                return store.state.calculateCountryCurrency
-            },
-            set(value) {
-                store.commit('UPDATE_CALCULATE_COUNTRY_CURRENCY', value)
-            },
-        });
+        let exchangeable = ref('')
+        let exchangeableResult = ref('')
+        let baseCountryCurrency = ref("RUB")
+        let chardCode = ref('')
+        let calculateCountryCurrency = ref("Select Currency")
+        let calculateCountryCurrencyValue = ref("")
+        const currencies = ref([])
+        let timeStamp = ref("")
+        const errorMessage = ref(false)
 
         onMounted(() => {
-            store.dispatch("fetchCurrencies");
-        });
+            getCurrencies()
+        })
+
+        watch(exchangeable, () => {
+            currencyValidate();
+            calculate(exchangeable.value, calculateCountryCurrency.value);
+        })
 
         function exchange() {
-            store.commit("VALIDATE_CURRENCY")
-
+            currencyValidate();
             exchangeable.value = exchangeableResult.value;
             exchangeableResult.value = exchangeable.value;
         }
 
         function changeCalculationCurrency(e) {
-            store.commit("VALIDATE_CURRENCY")
-
+            currencyValidate();
             calculateCountryCurrency.value = e.target.value;
-            chardCode.value =
-                e.target.options[e.target.options.selectedIndex].dataset.charcode;
-            //calculate(exchangeable.value, calculateCountryCurrency.value);
+            //console.log(e.target.options[e.target.options.selectedIndex].dataset.country)
+            chardCode.value = e.target.options[e.target.options.selectedIndex].dataset.charcode;
+            calculate(exchangeable.value, calculateCountryCurrency.value);
         }
 
-        // function currencyValidate() {
-        //     errorMessage.value = calculateCountryCurrency.value === "Select Currency";
-        // }
+        function getCurrencies() {
+            fetch("https://www.cbr-xml-daily.ru/daily_json.js")
+                .then((res) => {
+                    return res.json();
+                }).then((data) => {
+                    console.log(data);
+                    currencies.value = data.Valute;
+                    timeStamp.value = data.Timestamp;
+                });
+        }
+
+        function currencyValidate() {
+            errorMessage.value = calculateCountryCurrency.value === 'Select Currency';
+        }
+
+        function calculate(exchangeable, countryCurrency) {
+            exchangeableResult.value = (exchangeable / countryCurrency).toFixed((2))
+        }
 
         return {
             changeCalculationCurrency,
             exchange,
-            getCurrencies,
-            getTimestamp,
             chardCode,
             errorMessage,
+            timeStamp,
             exchangeable,
+            currencies,
             baseCountryCurrency,
             calculateCountryCurrency,
             calculateCountryCurrencyValue,
-            exchangeableResult,
-        };
+            exchangeableResult
+        }
     },
 };
